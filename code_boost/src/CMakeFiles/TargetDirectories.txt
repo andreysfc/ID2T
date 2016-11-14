@@ -1,0 +1,3 @@
+/root/Thesis/public/code_boost/src/SQLiteCpp/CMakeFiles/SQLiteCpp.dir
+/root/Thesis/public/code_boost/src/CMakeFiles/pcapreader.dir
+/root/Thesis/public/code_boost/src/SQLiteCpp/sqlite3/CMakeFiles/sqlite3.dir

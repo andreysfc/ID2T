@@ -4,10 +4,10 @@
 project(cpp-pcapreader)
 
 # Define CMake settings
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.0)
 
 IF(NOT CMAKE_BUILD_TYPE)
-   SET(CMAKE_BUILD_TYPE "Release")
+   SET(CMAKE_BUILD_TYPE "Debug")
 ENDIF()
 
 IF (CMAKE_BUILD_TYPE MATCHES Debug)
