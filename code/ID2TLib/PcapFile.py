@@ -3,6 +3,7 @@ import os.path
 import sys
 
 import ID2TLib.libpcapreader as pr
+import time
 
 
 class PcapFile(object):
@@ -24,7 +25,13 @@ class PcapFile(object):
         print("Merging base pcap with attack pcap...", end=" ")
         sys.stdout.flush()  # force python to print text immediately
 
+        time_s = time.time()
         pcap = pr.pcap_processor(self.pcap_file_path)
+        time_e = time.time()
+        f = open("/root/perfresults/runtime_merging.txt", "a")
+        f.write(time_e - time_s)
+        f.close()
+
         file_out_path = pcap.merge_pcaps(attack_pcap_path)
         print("done.")
 

@@ -47,7 +47,14 @@ class Statistics:
         # Recalculate statistics if database not exists OR param -r/--recalculate was provided
         if (not self.stats_db.get_db_exists()) or flag_recalculate_stats:
             self.pcap_proc = pr.pcap_processor(self.pcap_filepath)
+
+            time_s = time.time()
             self.pcap_proc.collect_statistics()
+            time_e = time.time()
+            f = open("/root/perfresults/runtime_stats.txt", "a")
+            f.write(time_e - time_s)
+            f.close()
+
             self.pcap_proc.write_to_database(self.path_db)
             outstring_datasource = "by PCAP file processor."
         else:

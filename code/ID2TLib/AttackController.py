@@ -2,6 +2,8 @@ import importlib
 import os
 import tempfile
 import sys
+
+import time
 from scapy.utils import PcapWriter
 from Attack.AttackParameters import Parameter
 from ID2TLib import LabelManager
@@ -83,7 +85,14 @@ class AttackController:
         # Write attack into pcap file
         print("Generating attack packets...", end=" ")
         sys.stdout.flush()  # force python to print text immediately
+
+        time_s = time.time()
         temp_attack_pcap_path = self.current_attack.generate_attack_pcap()
+        time_e = time.time()
+        f = open("/root/perfresults/runtime_packetgen.txt", "a")
+        f.write(time_e - time_s)
+        f.close()
+
         print("done.")
 
         # Merge attack with existing pcap
