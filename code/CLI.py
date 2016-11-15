@@ -106,23 +106,23 @@ def main(args):
 
 # Uncomment to enable calling by terminal
 # if __name__ == '__main__':
-#     main(sys.argv[1:])
+#    main(sys.argv[1:])
 
 if __name__ == '__main__':
     INPUT = ['-i']
 
-#    FILES = ['/root/datasets/201506021400_1G.pcap',
-#             '/root/datasets/201506021400_2G.pcap',
-#             '/root/datasets/201506021400_5G.pcap']
+    #    FILES = ['/root/datasets/201506021400_1G.pcap',
+    #             '/root/datasets/201506021400_2G.pcap',
+    #             '/root/datasets/201506021400_5G.pcap']
 
-    FILES = ['/root/datasets/201506021400_2G.pcap']
+    FILES = ['/mnt/hgfs/datasets/201506021400_2G.pcap']
 
-#    FILES = ['/root/test_me_short.pcap']
+    #    FILES = ['/mnt/hgfs/datasets/95M.pcap']
 
     ATTACK_PS = ['-a', 'PortscanAttack', 'ip.src=10.2.2.4', 'mac.dst=05:AB:47:B5:19:11',
                  'inject.at-timestamp=1449038705.316721', 'attack.note=Portscan2']
     ATTACK_PS2 = ['-a', 'PortscanAttack', 'port.dst=1-1024']
-    ATTACK_DD = ['-a', 'DDoSAttack', 'attackers.count=10', 'packets.limit=500000']
+    ATTACK_DD = ['-a', 'DDoSAttack', 'attackers.count=10', 'packets.limit=1000']
 
     STATS_RECALC = ['-r']
     STATS_PRINT = ['-s']
@@ -132,5 +132,5 @@ if __name__ == '__main__':
     QUERY_DB = ['-q', 'ipAddress(pktsSent > 1000, kbytesSent >= 20)']
 
     for f in FILES:
-        main(INPUT + [f] + ATTACK_PS2)  # Statistics Calculation
+        main(INPUT + [f] + ATTACK_PS2 + ATTACK_DD)  # Statistics Calculation
         #main(INPUT + ATTACK_DD)  # Attack Packet Generation -> insert exit() | Merging

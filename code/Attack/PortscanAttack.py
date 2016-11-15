@@ -53,7 +53,10 @@ class PortscanAttack(BaseAttack.BaseAttack):
 
         random_ip_address = self.statistics.get_random_ip_address()
         self.add_param_value(Param.IP_DESTINATION, random_ip_address)
-        self.add_param_value(Param.MAC_DESTINATION, self.statistics.get_mac_address(random_ip_address))
+        destination_mac = self.statistics.get_mac_address(random_ip_address)
+        if isinstance(destination_mac, list) and len(destination_mac) == 0:
+            destination_mac = self.generate_random_mac_address()
+        self.add_param_value(Param.MAC_DESTINATION, destination_mac)
 
         self.add_param_value(Param.PORT_DESTINATION, '1-1023,1720,1900,8080')
         self.add_param_value(Param.PORT_OPEN, '8080,9232,9233')
@@ -158,10 +161,8 @@ class PortscanAttack(BaseAttack.BaseAttack):
         # store end time of attack
         self.attack_end_utime = packets[-1].time
 
-        print("Packets created: " + str(len(packets)))
+        # write attack packets to pcap
+        pcap_path = self.write_attack_pcap(sorted(packets, key=lambda pkt: pkt.time))
 
-        # write packets to disk
-        path_attack_pcap = self.write_attack_pcap(sorted(packets, key=lambda pkt: pkt.time))
-
-        # return destination path
-        return path_attack_pcap
+        # return packets sorted by packet time_sec_start
+        return len(packets), pcap_path
