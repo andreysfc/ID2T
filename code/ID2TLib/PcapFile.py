@@ -27,12 +27,12 @@ class PcapFile(object):
 
         time_s = time.time()
         pcap = pr.pcap_processor(self.pcap_file_path)
+        file_out_path = pcap.merge_pcaps(attack_pcap_path)
         time_e = time.time()
         f = open("/root/perfresults/runtime_merging.txt", "a")
-        f.write(time_e - time_s)
+        f.write(str(time_e - time_s)+"\n")
         f.close()
 
-        file_out_path = pcap.merge_pcaps(attack_pcap_path)
         print("done.")
 
         return file_out_path

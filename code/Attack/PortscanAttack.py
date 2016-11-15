@@ -156,7 +156,12 @@ class PortscanAttack(BaseAttack.BaseAttack):
                 # else: destination port is NOT OPEN -> no reply is sent by target
 
         # store end time of attack
-        self.attack_end_utime = reply.time
+        self.attack_end_utime = packets[-1].time
 
-        # return packets sorted by packet time_sec_start
-        return sorted(packets, key=lambda pkt: pkt.time)
+        print("Packets created: " + str(len(packets)))
+
+        # write packets to disk
+        path_attack_pcap = self.write_attack_pcap(sorted(packets, key=lambda pkt: pkt.time))
+
+        # return destination path
+        return path_attack_pcap

@@ -5,6 +5,7 @@ import subprocess
 import time
 import psutil
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -34,7 +35,7 @@ def log_performance():
     stats_io_r_b = []
     stats_io_w_b = []
 
-    proc = subprocess.Popen("/home/pjattke/Thesis/public/code/CLI.py")
+    proc = subprocess.Popen("./CLI.py")
     p = psutil.Process(proc.pid)
     start_time = time.time()
     while proc is None or proc.poll() is None:

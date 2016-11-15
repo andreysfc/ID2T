@@ -1,6 +1,6 @@
 import os
 import time
-import libpcapreader as pr
+import ID2TLib.libpcapreader as pr
 import matplotlib.pyplot as plt
 from ID2TLib.PcapFile import PcapFile
 from ID2TLib.StatsDatabase import StatsDatabase
@@ -52,7 +52,7 @@ class Statistics:
             self.pcap_proc.collect_statistics()
             time_e = time.time()
             f = open("/root/perfresults/runtime_stats.txt", "a")
-            f.write(time_e - time_s)
+            f.write(str(time_e - time_s) + "\n")
             f.close()
 
             self.pcap_proc.write_to_database(self.path_db)
