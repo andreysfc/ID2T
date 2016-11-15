@@ -18,7 +18,7 @@ def log_performance():
             return n
 
     # Interval for data collection (in seconds)
-    probe_interval = 0.1
+    probe_interval = 1
 
     i = 0
     x = []
@@ -35,7 +35,8 @@ def log_performance():
     stats_io_r_b = []
     stats_io_w_b = []
 
-    proc = subprocess.Popen("./CLI.py")
+#    proc = subprocess.Popen("./CLI.py")
+    proc = subprocess.Popen(sys.argv[1:])
     p = psutil.Process(proc.pid)
     start_time = time.time()
     while proc is None or proc.poll() is None:

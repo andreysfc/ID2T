@@ -92,7 +92,8 @@ class AttackController:
         # f.write(str(time_e - time_s) + "\n")
         # f.close()
         # print("Finished............")
-        # exit(0)
+        print("Temporary attack pcap located at: " + temp_attack_pcap_path)
+        exit(0)
         print("done. (total: " + str(total_packets) + " pkts.)")
 
         # Merge attack with existing pcap
