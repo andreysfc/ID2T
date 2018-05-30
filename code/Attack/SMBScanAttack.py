@@ -40,7 +40,7 @@ class SMBScanAttack(BaseAttack.BaseAttack):
             atkParam.Parameter.INJECT_AT_TIMESTAMP: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.INJECT_AFTER_PACKET: atkParam.ParameterTypes.TYPE_PACKET_POSITION,
             atkParam.Parameter.IP_SOURCE_RANDOMIZE: atkParam.ParameterTypes.TYPE_BOOLEAN,
-            atkParam.Parameter.PACKETS_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
+            atkParam.Parameter.PACKET_LIMIT_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.INJECT_PPS: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.PORT_SOURCE_RANDOMIZE: atkParam.ParameterTypes.TYPE_BOOLEAN,
             atkParam.Parameter.HOSTING_IP: atkParam.ParameterTypes.TYPE_IP_ADDRESS,
@@ -69,7 +69,7 @@ class SMBScanAttack(BaseAttack.BaseAttack):
 
         self.add_param_value(atkParam.Parameter.PORT_SOURCE, rnd.randint(1024, 65535))
         self.add_param_value(atkParam.Parameter.PORT_SOURCE_RANDOMIZE, 'True')
-        self.add_param_value(atkParam.Parameter.PACKETS_PER_SECOND,
+        self.add_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND,
                              (self.statistics.get_pps_sent(most_used_ip_address) +
                               self.statistics.get_pps_received(most_used_ip_address)) / 2)
 
@@ -90,7 +90,7 @@ class SMBScanAttack(BaseAttack.BaseAttack):
         Creates the attack packets.
         """
 
-        pps = self.get_param_value(atkParam.Parameter.PACKETS_PER_SECOND)
+        pps = self.get_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND)
 
         # Calculate complement packet rates of the background traffic for each interval
         complement_interval_pps = self.statistics.calculate_complement_packet_rates(pps)

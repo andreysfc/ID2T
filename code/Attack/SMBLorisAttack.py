@@ -33,7 +33,7 @@ class SMBLorisAttack(BaseAttack.BaseAttack):
             atkParam.Parameter.MAC_DESTINATION: atkParam.ParameterTypes.TYPE_MAC_ADDRESS,
             atkParam.Parameter.INJECT_AT_TIMESTAMP: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.INJECT_AFTER_PACKET: atkParam.ParameterTypes.TYPE_PACKET_POSITION,
-            atkParam.Parameter.PACKETS_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
+            atkParam.Parameter.PACKET_LIMIT_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.ATTACK_DURATION: atkParam.ParameterTypes.TYPE_INTEGER_POSITIVE,
             atkParam.Parameter.NUMBER_ATTACKERS: atkParam.ParameterTypes.TYPE_INTEGER_POSITIVE
         })
@@ -67,7 +67,7 @@ class SMBLorisAttack(BaseAttack.BaseAttack):
         if isinstance(destination_mac, list) and len(destination_mac) == 0:
             destination_mac = self.generate_random_mac_address()
         self.add_param_value(atkParam.Parameter.MAC_DESTINATION, destination_mac)
-        self.add_param_value(atkParam.Parameter.PACKETS_PER_SECOND,
+        self.add_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND,
                              (self.statistics.get_pps_sent(most_used_ip_address) +
                               self.statistics.get_pps_received(most_used_ip_address)) / 2)
         self.add_param_value(atkParam.Parameter.INJECT_AFTER_PACKET, rnd.randint(0, self.statistics.get_packet_count()))
@@ -77,7 +77,7 @@ class SMBLorisAttack(BaseAttack.BaseAttack):
         """
         Creates the attack packets.
         """
-        pps = self.get_param_value(atkParam.Parameter.PACKETS_PER_SECOND)
+        pps = self.get_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND)
 
         # Timestamp
         first_timestamp = self.get_param_value(atkParam.Parameter.INJECT_AT_TIMESTAMP)

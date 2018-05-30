@@ -63,7 +63,7 @@ class MembersMgmtCommAttack(BaseAttack.BaseAttack):
 
             # whether the destination port of a response should be the ephemeral port 
             # its request came from or a static (server)port based on a hostname
-            Param.MULTIPORT: ParameterTypes.TYPE_BOOLEAN,
+            Param.PORT_MULTI: ParameterTypes.TYPE_BOOLEAN,
 
             # information about the interval selection strategy
             Param.INTERVAL_SELECT_STRATEGY: ParameterTypes.TYPE_INTERVAL_SELECT_STRAT,
@@ -72,7 +72,7 @@ class MembersMgmtCommAttack(BaseAttack.BaseAttack):
 
             # determines whether injected packets are marked with an unused IP option
             # to easily filter them in e.g. wireshark
-            Param.HIDDEN_MARK: ParameterTypes.TYPE_BOOLEAN
+            Param.PACKETS_MARK: ParameterTypes.TYPE_BOOLEAN
         }
 
         # create dict with MessageType values for fast name lookup
@@ -116,12 +116,12 @@ class MembersMgmtCommAttack(BaseAttack.BaseAttack):
         self.add_param_value(Param.TTL_FROM_CAIDA, False)
 
         # do not use multiple ports for requests and responses
-        self.add_param_value(Param.MULTIPORT, False)
+        self.add_param_value(Param.PORT_MULTI, False)
 
         # interval selection strategy
         self.add_param_value(Param.INTERVAL_SELECT_STRATEGY, "optimal")
 
-        self.add_param_value(Param.HIDDEN_MARK, False)
+        self.add_param_value(Param.PACKETS_MARK, False)
 
     def generate_attack_pcap(self):
         """
@@ -148,7 +148,7 @@ class MembersMgmtCommAttack(BaseAttack.BaseAttack):
         over_thousand = False
 
         msg_packet_mapping = MessageMapping(messages, self.statistics.get_pcap_timestamp_start())
-        mark_packets = self.get_param_value(Param.HIDDEN_MARK)
+        mark_packets = self.get_param_value(Param.PACKETS_MARK)
 
         # create packets to write to PCAP file
         for msg in messages:
@@ -578,7 +578,7 @@ class MembersMgmtCommAttack(BaseAttack.BaseAttack):
             return port
 
         # create port configurations for the bots
-        use_multiple_ports = self.get_param_value(Param.MULTIPORT)
+        use_multiple_ports = self.get_param_value(Param.PORT_MULTI)
         for bot in sorted(bot_configs):
             bot_configs[bot]["SrcPort"] = filter_reserved(port_selector.select_port_udp)
             if not use_multiple_ports:

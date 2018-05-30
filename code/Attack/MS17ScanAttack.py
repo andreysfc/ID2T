@@ -43,7 +43,7 @@ class MS17ScanAttack(BaseAttack.BaseAttack):
             atkParam.Parameter.PORT_DESTINATION: atkParam.ParameterTypes.TYPE_PORT,
             atkParam.Parameter.INJECT_AT_TIMESTAMP: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.INJECT_AFTER_PACKET: atkParam.ParameterTypes.TYPE_PACKET_POSITION,
-            atkParam.Parameter.PACKETS_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT
+            atkParam.Parameter.PACKET_LIMIT_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT
         })
 
     def init_params(self):
@@ -72,7 +72,7 @@ class MS17ScanAttack(BaseAttack.BaseAttack):
         self.add_param_value(atkParam.Parameter.PORT_DESTINATION, SMBLib.smb_port)
 
         # Attack configuration
-        self.add_param_value(atkParam.Parameter.PACKETS_PER_SECOND,
+        self.add_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND,
                              (self.statistics.get_pps_sent(most_used_ip_address) +
                               self.statistics.get_pps_received(most_used_ip_address)) / 2)
         self.add_param_value(atkParam.Parameter.INJECT_AFTER_PACKET, rnd.randint(0, self.statistics.get_packet_count()))
@@ -83,7 +83,7 @@ class MS17ScanAttack(BaseAttack.BaseAttack):
         """
         # Timestamp
         timestamp_next_pkt = self.get_param_value(atkParam.Parameter.INJECT_AT_TIMESTAMP)
-        pps = self.get_param_value(atkParam.Parameter.PACKETS_PER_SECOND)
+        pps = self.get_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND)
 
         # calculate complement packet rates of BG traffic per interval
         complement_interval_pps = self.statistics.calculate_complement_packet_rates(pps)

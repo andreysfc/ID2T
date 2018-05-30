@@ -37,7 +37,7 @@ class PortscanAttack(BaseAttack.BaseAttack):
             atkParam.Parameter.PORT_DEST_SHUFFLE: atkParam.ParameterTypes.TYPE_BOOLEAN,
             atkParam.Parameter.PORT_DEST_ORDER_DESC: atkParam.ParameterTypes.TYPE_BOOLEAN,
             atkParam.Parameter.IP_SOURCE_RANDOMIZE: atkParam.ParameterTypes.TYPE_BOOLEAN,
-            atkParam.Parameter.PACKETS_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
+            atkParam.Parameter.PACKET_LIMIT_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.PORT_SOURCE_RANDOMIZE: atkParam.ParameterTypes.TYPE_BOOLEAN
         })
 
@@ -71,7 +71,7 @@ class PortscanAttack(BaseAttack.BaseAttack):
         self.add_param_value(atkParam.Parameter.PORT_DEST_ORDER_DESC, 'False')
         self.add_param_value(atkParam.Parameter.PORT_SOURCE, rnd.randint(1024, 65535))
         self.add_param_value(atkParam.Parameter.PORT_SOURCE_RANDOMIZE, 'False')
-        self.add_param_value(atkParam.Parameter.PACKETS_PER_SECOND,
+        self.add_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND,
                              (self.statistics.get_pps_sent(most_used_ip_address) +
                               self.statistics.get_pps_received(most_used_ip_address)) / 2)
         self.add_param_value(atkParam.Parameter.INJECT_AFTER_PACKET, rnd.randint(0, self.statistics.get_packet_count()))
@@ -82,7 +82,7 @@ class PortscanAttack(BaseAttack.BaseAttack):
         """
         mac_source = self.get_param_value(atkParam.Parameter.MAC_SOURCE)
         mac_destination = self.get_param_value(atkParam.Parameter.MAC_DESTINATION)
-        pps = self.get_param_value(atkParam.Parameter.PACKETS_PER_SECOND)
+        pps = self.get_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND)
 
         # Calculate complement packet rates of the background traffic for each interval
         complement_interval_pps = self.statistics.calculate_complement_packet_rates(pps)

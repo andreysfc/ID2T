@@ -31,7 +31,7 @@ class MemcrashedSpooferAttack(BaseAttack.BaseAttack):
             atkParam.Parameter.IP_VICTIM: atkParam.ParameterTypes.TYPE_IP_ADDRESS,
             atkParam.Parameter.INJECT_AT_TIMESTAMP: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.INJECT_AFTER_PACKET: atkParam.ParameterTypes.TYPE_PACKET_POSITION,
-            atkParam.Parameter.PACKETS_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
+            atkParam.Parameter.PACKET_LIMIT_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.ATTACK_DURATION: atkParam.ParameterTypes.TYPE_INTEGER_POSITIVE
         })
 
@@ -53,8 +53,8 @@ class MemcrashedSpooferAttack(BaseAttack.BaseAttack):
         # IP of the victim which is supposed to get hit by the amplified attack
         self.add_param_value(atkParam.Parameter.IP_VICTIM, self.generate_random_ipv4_address('A'))
 
-        self.add_param_value(atkParam.Parameter.PACKETS_PER_SECOND, (self.statistics.get_pps_sent(most_used_ip) +
-                             self.statistics.get_pps_received(most_used_ip)) / 2)
+        self.add_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND, (self.statistics.get_pps_sent(most_used_ip) +
+                                                                          self.statistics.get_pps_received(most_used_ip)) / 2)
         self.add_param_value(atkParam.Parameter.ATTACK_DURATION, rnd.randint(5, 30))
         self.add_param_value(atkParam.Parameter.INJECT_AFTER_PACKET, rnd.randint(0, self.statistics.get_packet_count()))
 
@@ -65,7 +65,7 @@ class MemcrashedSpooferAttack(BaseAttack.BaseAttack):
         mac_amplifier = self.get_param_value(atkParam.Parameter.MAC_DESTINATION)
         ip_victim = self.get_param_value(atkParam.Parameter.IP_VICTIM)
 
-        pps = self.get_param_value(atkParam.Parameter.PACKETS_PER_SECOND)
+        pps = self.get_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND)
 
         timestamp_next_pkt = self.get_param_value(atkParam.Parameter.INJECT_AT_TIMESTAMP)
         self.attack_start_utime = timestamp_next_pkt

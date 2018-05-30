@@ -37,7 +37,7 @@ class DDoSAttack(BaseAttack.BaseAttack):
             atkParam.Parameter.PORT_DESTINATION: atkParam.ParameterTypes.TYPE_PORT,
             atkParam.Parameter.INJECT_AT_TIMESTAMP: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.INJECT_AFTER_PACKET: atkParam.ParameterTypes.TYPE_PACKET_POSITION,
-            atkParam.Parameter.PACKETS_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
+            atkParam.Parameter.PACKET_LIMIT_PER_SECOND: atkParam.ParameterTypes.TYPE_FLOAT,
             atkParam.Parameter.NUMBER_ATTACKERS: atkParam.ParameterTypes.TYPE_INTEGER_POSITIVE,
             atkParam.Parameter.ATTACK_DURATION: atkParam.ParameterTypes.TYPE_INTEGER_POSITIVE,
             atkParam.Parameter.VICTIM_BUFFER: atkParam.ParameterTypes.TYPE_INTEGER_POSITIVE
@@ -62,7 +62,7 @@ class DDoSAttack(BaseAttack.BaseAttack):
         self.add_param_value(atkParam.Parameter.MAC_SOURCE, self.generate_random_mac_address(num_attackers))
         self.default_port = int(inet.RandShort())
         self.add_param_value(atkParam.Parameter.PORT_SOURCE, self.default_port)
-        self.add_param_value(atkParam.Parameter.PACKETS_PER_SECOND, 0)
+        self.add_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND, 0)
         self.add_param_value(atkParam.Parameter.ATTACK_DURATION, rnd.randint(5, 30))
 
         # victim configuration
@@ -118,7 +118,7 @@ class DDoSAttack(BaseAttack.BaseAttack):
         ip_destination = self.get_param_value(atkParam.Parameter.IP_DESTINATION)
 
         most_used_ip_address = self.statistics.get_most_used_ip_address()
-        pps = self.get_param_value(atkParam.Parameter.PACKETS_PER_SECOND)
+        pps = self.get_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND)
         if pps == 0:
             result = self.statistics.process_db_query(
                 "SELECT MAX(maxPktRate) FROM ip_statistics WHERE ipAddress='" + ip_destination + "';")
