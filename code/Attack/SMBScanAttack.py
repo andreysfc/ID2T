@@ -1,3 +1,4 @@
+import functools as ft
 import logging
 import random as rnd
 
@@ -62,46 +63,36 @@ class SMBScanAttack(BaseAttack.BaseAttack):
 
         self.add_param_value(atkParam.Parameter.IP_SOURCE, most_used_ip_address)
         self.add_param_value(atkParam.Parameter.IP_SOURCE_RANDOMIZE, 'False')
-        self.add_param_value(atkParam.Parameter.MAC_SOURCE, self.statistics.get_mac_address(most_used_ip_address))
+        self.add_param_value(atkParam.Parameter.MAC_SOURCE, ft.partial(self.statistics.get_mac_address,
+                                                                       most_used_ip_address))
 
         self.add_param_value(atkParam.Parameter.TARGET_COUNT, 200)
         self.add_param_value(atkParam.Parameter.IP_DESTINATION, "1.1.1.1")
 
-        self.add_param_value(atkParam.Parameter.PORT_SOURCE, rnd.randint(1024, 65535))
+        self.add_param_value(atkParam.Parameter.PORT_SOURCE, ft.partial(rnd.randint, 1024, 65535))
         self.add_param_value(atkParam.Parameter.PORT_SOURCE_RANDOMIZE, 'True')
         self.add_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND,
                              (self.statistics.get_pps_sent(most_used_ip_address) +
                               self.statistics.get_pps_received(most_used_ip_address)) / 2)
 
-        self.add_param_value(atkParam.Parameter.INJECT_AFTER_PACKET, rnd.randint(0, self.statistics.get_packet_count()))
-        start = Util.get_timestamp_from_datetime_str(self.statistics.get_pcap_timestamp_start())
-        end = Util.get_timestamp_from_datetime_str(self.statistics.get_pcap_timestamp_end())
-        self.add_param_value(atkParam.Parameter.INJECT_AT_TIMESTAMP, (start + end) / 2)
+        def packet():
+            return rnd.randint(0, self.statistics.get_packet_count())
+        self.add_param_value(atkParam.Parameter.INJECT_AFTER_PACKET, packet)
+
+        def median_timestamp():
+            start = Util.get_timestamp_from_datetime_str(self.statistics.get_pcap_timestamp_start())
+            end = Util.get_timestamp_from_datetime_str(self.statistics.get_pcap_timestamp_end())
+            return (start + end) / 2
+        self.add_param_value(atkParam.Parameter.INJECT_AT_TIMESTAMP, median_timestamp)
         self.add_param_value(atkParam.Parameter.INJECT_PPS, 0)
 
         self.add_param_value(atkParam.Parameter.HOSTING_PERCENTAGE, 0.5)
         self.add_param_value(atkParam.Parameter.HOSTING_IP, "1.1.1.1")
-        self.add_param_value(atkParam.Parameter.HOSTING_VERSION, SMBLib.get_smb_version(platform=self.host_os))
-        self.add_param_value(atkParam.Parameter.SOURCE_PLATFORM, Util.get_rnd_os())
+        self.add_param_value(atkParam.Parameter.HOSTING_VERSION, ft.partial(SMBLib.get_smb_version,
+                                                                            platform=self.host_os))
+        self.add_param_value(atkParam.Parameter.SOURCE_PLATFORM, Util.get_rnd_os)
         self.add_param_value(atkParam.Parameter.PROTOCOL_VERSION, "1")
 
-    def generate_attack_packets(self):
-        """
-        Creates the attack packets.
-        """
-
-        pps = self.get_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND)
-
-        # Calculate complement packet rates of the background traffic for each interval
-        complement_interval_pps = self.statistics.calculate_complement_packet_rates(pps)
-
-        # Timestamp
-        timestamp_next_pkt = self.get_param_value(atkParam.Parameter.INJECT_AT_TIMESTAMP)
-        # store start time of attack
-        self.attack_start_utime = timestamp_next_pkt
-        timestamp_prv_reply, timestamp_confirm = 0, 0
-
-        # Initialize parameters
         ip_source = self.get_param_value(atkParam.Parameter.IP_SOURCE)
 
         dest_ip_count = self.get_param_value(atkParam.Parameter.TARGET_COUNT)
@@ -130,8 +121,6 @@ class SMBScanAttack(BaseAttack.BaseAttack):
             ip_destinations.remove(ip_source)
         self.add_param_value(atkParam.Parameter.IP_DESTINATION, ip_destinations)
 
-        ip_destinations = self.get_param_value(atkParam.Parameter.IP_DESTINATION)
-
         # Calculate the amount of IP addresses which are hosting SMB
         host_percentage = self.get_param_value(atkParam.Parameter.HOSTING_PERCENTAGE)
         rnd_ip_count = len(ip_destinations) * host_percentage
@@ -146,8 +135,31 @@ class SMBScanAttack(BaseAttack.BaseAttack):
         else:
             hosting_ip = []
 
-        hosting_ip = hosting_ip + ip_destinations[:int(rnd_ip_count)]
         self.add_param_value(atkParam.Parameter.HOSTING_IP, hosting_ip)
+
+    def generate_attack_packets(self):
+        """
+        Creates the attack packets.
+        """
+
+        pps = self.get_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND)
+
+        # Calculate complement packet rates of the background traffic for each interval
+        complement_interval_pps = self.statistics.calculate_complement_packet_rates(pps)
+
+        # Timestamp
+        timestamp_next_pkt = self.get_param_value(atkParam.Parameter.INJECT_AT_TIMESTAMP)
+        # store start time of attack
+        self.attack_start_utime = timestamp_next_pkt
+        timestamp_prv_reply, timestamp_confirm = 0, 0
+
+        # Initialize parameters
+        ip_source = self.get_param_value(atkParam.Parameter.IP_SOURCE)
+        ip_destinations = self.get_param_value(atkParam.Parameter.IP_DESTINATION)
+        if not isinstance(ip_destinations, list):
+            ip_destinations = [ip_destinations]
+
+        hosting_ip = self.get_param_value(atkParam.Parameter.HOSTING_IP)
 
         # Shuffle targets
         rnd.shuffle(ip_destinations)
