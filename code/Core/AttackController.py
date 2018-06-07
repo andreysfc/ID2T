@@ -116,8 +116,6 @@ class AttackController:
         if seed is not None:
             self.current_attack.set_seed(seed=seed)
 
-        self.current_attack.init_params()
-
         # Unset the user-specified-flag for all parameters set in init_params
         for k, v in self.current_attack.params.items():
             self.current_attack.params[k] = self.current_attack.ValuePair(v.value, False)
@@ -167,6 +165,8 @@ class AttackController:
             self.set_params(params_dict)
         else:
             attack_note = "This attack used only (random) default parameters."
+
+        self.current_attack.init_params()
 
         # Write attack into pcap file
         print("Generating attack packets...", end=" ")

@@ -368,6 +368,10 @@ class BaseAttack(metaclass=abc.ABCMeta):
             print("ERROR: Parameter " + param + " is not supported by ID2T.")
             sys.exit(-1)
 
+        # if parameter is already specified, stop
+        if param_name in self.params.keys():
+            return
+
         # Get parameter type of attack's required_params
         param_type = self.supported_params.get(param_name)
 
