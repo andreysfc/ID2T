@@ -369,8 +369,15 @@ class BaseAttack(metaclass=abc.ABCMeta):
             sys.exit(-1)
 
         # if parameter is already specified, stop
-        if param_name in self.params.keys():
+        if param_name in self.params.keys()\
+                and not callable(value)\
+                and ((isinstance(value, list) and self.params.values() not in value)
+                     or value not in self.params.values()):
             return
+
+        # call function or method if necessary
+        if callable(value):
+            value = value()
 
         # Get parameter type of attack's required_params
         param_type = self.supported_params.get(param_name)
