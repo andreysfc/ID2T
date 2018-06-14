@@ -216,4 +216,4 @@ class AttackController:
         :return: None
         """
         for param_key, param_value in params.items():
-            self.current_attack.add_param_value(param_key, param_value)
+            self.current_attack.add_param_value(param_key, param_value, user_specified=True)

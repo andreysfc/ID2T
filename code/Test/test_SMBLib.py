@@ -49,5 +49,4 @@ class TestSMBLib(unittest.TestCase):
         self.assertTrue(time <= Utility.get_filetime_format(100))
 
     def test_invalid_smb_version(self):
-        with self.assertRaises(SystemExit):
-            SMBLib.invalid_smb_version("abc")
+        self.assertEqual(SMBLib.is_valid_version("abc"), False)

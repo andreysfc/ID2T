@@ -97,12 +97,13 @@ def get_smb_platform_data(platform: str, timestamp: float):
     return server_guid, security_blob, capabilities, data_size, server_start_time
 
 
-def invalid_smb_version(version: str):
+def is_valid_version(version: str) -> bool:
     """
-    Prints an error and exits
-
-    :param version: the invalid SMB
+    :param version: the SMB version
+    :return: True if version is valid, False if otherwise.
     """
-    print("\nInvalid smb version: " + version +
-          "\nPlease select one of the following versions: ", smb_versions)
-    exit(1)
+    if version not in smb_versions:
+        print("\nInvalid smb version: " + version +
+              "\nPlease select one of the following versions: ", smb_versions)
+        return False
+    return True

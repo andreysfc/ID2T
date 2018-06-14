@@ -61,14 +61,12 @@ class SMBScanAttack(BaseAttack.BaseAttack):
         # (values are overwritten if user specifies them)
         most_used_ip_address = self.statistics.get_most_used_ip_address()
 
+        self.add_param_value(atkParam.Parameter.TARGET_COUNT, 200)
+
         self.add_param_value(atkParam.Parameter.IP_SOURCE, most_used_ip_address)
         self.add_param_value(atkParam.Parameter.IP_SOURCE_RANDOMIZE, 'False')
         self.add_param_value(atkParam.Parameter.MAC_SOURCE, ft.partial(self.statistics.get_mac_address,
                                                                        most_used_ip_address))
-
-        self.add_param_value(atkParam.Parameter.TARGET_COUNT, 200)
-        self.add_param_value(atkParam.Parameter.IP_DESTINATION, "1.1.1.1")
-
         self.add_param_value(atkParam.Parameter.PORT_SOURCE, ft.partial(rnd.randint, 1024, 65535))
         self.add_param_value(atkParam.Parameter.PORT_SOURCE_RANDOMIZE, 'True')
         self.add_param_value(atkParam.Parameter.PACKET_LIMIT_PER_SECOND,
@@ -87,11 +85,20 @@ class SMBScanAttack(BaseAttack.BaseAttack):
         self.add_param_value(atkParam.Parameter.INJECT_PPS, 0)
 
         self.add_param_value(atkParam.Parameter.HOSTING_PERCENTAGE, 0.5)
-        self.add_param_value(atkParam.Parameter.HOSTING_IP, "1.1.1.1")
         self.add_param_value(atkParam.Parameter.HOSTING_VERSION, ft.partial(SMBLib.get_smb_version,
                                                                             platform=self.host_os))
         self.add_param_value(atkParam.Parameter.SOURCE_PLATFORM, Util.get_rnd_os)
         self.add_param_value(atkParam.Parameter.PROTOCOL_VERSION, "1")
+
+        # Check smb version
+        smb_version = self.get_param_value(atkParam.Parameter.PROTOCOL_VERSION)
+        print(smb_version)
+        if not SMBLib.is_valid_version(smb_version):
+            exit(1)
+        hosting_version = self.get_param_value(atkParam.Parameter.HOSTING_VERSION)
+        print(hosting_version)
+        if not SMBLib.is_valid_version(hosting_version):
+            exit(1)
 
         ip_source = self.get_param_value(atkParam.Parameter.IP_SOURCE)
 
@@ -104,7 +111,7 @@ class SMBScanAttack(BaseAttack.BaseAttack):
         ip_destinations = self.get_param_value(atkParam.Parameter.IP_DESTINATION)
         if isinstance(ip_destinations, list):
             dest_ip_count = dest_ip_count - len(ip_destinations)
-        elif ip_destinations is not "1.1.1.1":
+        elif ip_destinations is not None:
             dest_ip_count = dest_ip_count - 1
             ip_destinations = [ip_destinations]
         else:
@@ -129,12 +136,13 @@ class SMBScanAttack(BaseAttack.BaseAttack):
         hosting_ip = self.get_param_value(atkParam.Parameter.HOSTING_IP)
         if isinstance(hosting_ip, list):
             rnd_ip_count = rnd_ip_count - len(hosting_ip)
-        elif hosting_ip is not "1.1.1.1":
+        elif hosting_ip is not None:
             rnd_ip_count = rnd_ip_count - 1
             hosting_ip = [hosting_ip]
         else:
             hosting_ip = []
 
+        hosting_ip = hosting_ip + ip_destinations[:int(rnd_ip_count)]
         self.add_param_value(atkParam.Parameter.HOSTING_IP, hosting_ip)
 
     def generate_attack_packets(self):
@@ -161,6 +169,10 @@ class SMBScanAttack(BaseAttack.BaseAttack):
 
         hosting_ip = self.get_param_value(atkParam.Parameter.HOSTING_IP)
 
+        # Get smb version
+        smb_version = self.get_param_value(atkParam.Parameter.PROTOCOL_VERSION)
+        hosting_version = self.get_param_value(atkParam.Parameter.HOSTING_VERSION)
+
         # Shuffle targets
         rnd.shuffle(ip_destinations)
 
@@ -168,13 +180,6 @@ class SMBScanAttack(BaseAttack.BaseAttack):
         mac_source = self.get_param_value(atkParam.Parameter.MAC_SOURCE)
         mac_dest = self.get_param_value(atkParam.Parameter.MAC_DESTINATION)
 
-        # Check smb version
-        smb_version = self.get_param_value(atkParam.Parameter.PROTOCOL_VERSION)
-        if smb_version not in SMBLib.smb_versions:
-            SMBLib.invalid_smb_version(smb_version)
-        hosting_version = self.get_param_value(atkParam.Parameter.HOSTING_VERSION)
-        if hosting_version not in SMBLib.smb_versions:
-            SMBLib.invalid_smb_version(hosting_version)
         # Check source platform
         src_platform = self.get_param_value(atkParam.Parameter.SOURCE_PLATFORM).lower()
         self.packets = []
