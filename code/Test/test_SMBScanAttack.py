@@ -39,10 +39,6 @@ class UnitTestSMBScan(Test.ID2TAttackTest):
         with self.assertRaises(SystemExit):
             self.checksum_test([['SMBScanAttack', 'protocol.version=42']], 'somehash')
 
-    def test_smbscan_invalid_smb_platform(self):
-        with self.assertRaises(SystemExit):
-            self.checksum_test([['SMBScanAttack', 'hosting.version=1337']], 'somehash')
-
     def test_smbscan_port_shuffle(self):
         with mock.patch("ID2TLib.Utility.get_rnd_os", return_value="win7"):
             self.checksum_test([['SMBScanAttack', 'ip.src=192.168.178.1', 'ip.dst=192.168.178.5-192.168.178.10',
