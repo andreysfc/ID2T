@@ -341,7 +341,7 @@ class BaseAttack(metaclass=abc.ABCMeta):
         """
         return self.finish_time - self.start_time
 
-    def add_param_value(self, param, value, user_specified: bool = True) -> None:
+    def add_param_value(self, param, value, user_specified: bool = False) -> None:
         """
         Adds the pair param : value to the dictionary of attack parameters. Prints and error message and skips the
         parameter if the validation fails.
@@ -371,8 +371,8 @@ class BaseAttack(metaclass=abc.ABCMeta):
         # if parameter is already specified, stop
         if param_name in self.params.keys()\
                 and not callable(value)\
-                and ((isinstance(value, list) and self.params.values() not in value)
-                     or value not in self.params.values()):
+                and ((isinstance(value, list) and self.params.values() not in value) or param not in self.params.keys()
+                     or (param in self.params.keys() and value not in self.params.values())):
             return
 
         # call function or method if necessary
