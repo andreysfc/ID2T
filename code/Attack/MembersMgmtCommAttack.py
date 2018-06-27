@@ -265,11 +265,11 @@ class MembersMgmtCommAttack(BaseAttack.BaseAttack):
             # current callers to not end up with the same MAC paired with different IPs)
             macgen = Generator.MacAddressGenerator()
 
+            macs = self.statistics.get_mac_addresses(existing_ips)
             # assign existing IPs and the corresponding MAC addresses in the PCAP to the IDs
             for ip in existing_ips:
                 random_id = choice(ids)
-                mac = self.statistics.process_db_query("macAddress(IPAddress=%s)" % ip)
-                bot_configs[random_id] = {"Type": idtype, "IP": ip, "MAC": mac}
+                bot_configs[random_id] = {"Type": idtype, "IP": ip, "MAC": macs[ip]}
                 ids.remove(random_id)
 
             # assign new IPs and for local IPs new MACs or for external IPs the router MAC to the IDs
@@ -288,6 +288,7 @@ class MembersMgmtCommAttack(BaseAttack.BaseAttack):
             to calculate a realisitc ttl.
             :param bot_configs: List that contains all bots that should be assigned with realistic ttls.
             """
+            most_used_ttl = None
             ids = sorted(bot_configs.keys())
             for pos, bot in enumerate(ids):
                 bot_type = bot_configs[bot]["Type"]
@@ -300,11 +301,12 @@ class MembersMgmtCommAttack(BaseAttack.BaseAttack):
                         source_ttl_prob_dict = Lea.fromValFreqsDict(bot_ttl_dist)
                         bot_configs[bot]["TTL"] = source_ttl_prob_dict.random()
                     else:
-                        most_used_ttl = self.statistics.process_db_query("most_used(ttlValue)")
+                        if not most_used_ttl:
+                            most_used_ttl = self.statistics.process_db_query("most_used(ttlValue)")
                         if isinstance(most_used_ttl, list):
-                            bot_configs[bot]["TTL"] = choice(self.statistics.process_db_query("most_used(ttlValue)"))
+                            bot_configs[bot]["TTL"] = choice(most_used_ttl)
                         else:
-                            bot_configs[bot]["TTL"] = self.statistics.process_db_query("most_used(ttlValue)")
+                            bot_configs[bot]["TTL"] = most_used_ttl
 
         def assign_realistic_timestamps(messages: list, external_ids: set, local_ids: set, avg_delay_local: float,
                                         avg_delay_external: float, zero_reference: float):
