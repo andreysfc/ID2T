@@ -218,6 +218,8 @@ class Statistics:
         """
         interval_stats = self.stats_db.process_interval_statistics_query("SELECT * from %s", table_name)
 
+        print(interval_stats)
+
         column_names = self.stats_db.get_field_types(table_name)
         pretty_names = {'starttimestamp': "First packet timestamp(seconds)",
                         'lastpkttimestamp': "Last packet timestamp(seconds)",
@@ -236,6 +238,7 @@ class Statistics:
             final_names.append(name)
 
         for row in interval_stats:
+            print(row)
             for column, name in zip(row, final_names):
                 if type(column) == str:
                     try:
