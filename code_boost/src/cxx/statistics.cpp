@@ -47,7 +47,6 @@ void statistics::checkTCPChecksum(const std::string &ipAddressSender, const std:
  */
 std::vector<float> statistics::calculateLastIntervalIPsEntropy(std::chrono::microseconds intervalStartTimestamp){
     if(this->getDoExtraTests()) {
-        std::cout << "interval start timestamp: " << intervalStartTimestamp.count() << std::endl;
         // TODO: change datastructures
         std::vector<int> IPsSrcPktsCounts;
         std::vector<int> IPsDstPktsCounts;
@@ -79,9 +78,6 @@ std::vector<float> statistics::calculateLastIntervalIPsEntropy(std::chrono::micr
                 pktsReceived += IPsDstPktsCount;
             }
         }
-
-        std::cout << "ip src count: " << IPsSrcPktsCounts.size() << std::endl;
-        std::cout << "pkts sent total: " << pktsSent << std::endl;
 
         for (auto i = IPsSrcPktsCounts.begin(); i != IPsSrcPktsCounts.end(); i++) {
             IPsSrcProb.push_back(static_cast<double>(*i) / static_cast<double>(pktsSent));
