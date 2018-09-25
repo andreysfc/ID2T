@@ -237,9 +237,9 @@ class Statistics:
                 name = pretty_names[name]
             inverted_table[name] = []
             final_names.append(name)
-            print("loop " + str(i) + ": " + final_names)
+            print("loop " + str(i) + ": " + str(final_names))
 
-        print("finished:" + final_names)
+        print("finished:" + str(final_names))
 
         for row in interval_stats:
             print(row)
