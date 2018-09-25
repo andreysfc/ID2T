@@ -222,6 +222,7 @@ class Statistics:
         print(interval_stats)
 
         column_names = self.stats_db.get_field_types(table_name)
+        print(str(column_names))
         pretty_names = {'starttimestamp': "First packet timestamp(seconds)",
                         'lastpkttimestamp': "Last packet timestamp(seconds)",
                         'pktrate': "packets count(packets)",
