@@ -218,7 +218,6 @@ class Statistics:
         """
         column_names = self.stats_db.get_field_types(table_name)
         column_names = sorted(column_names)
-        print(str(column_names))
 
         result = column_names[0]
         for name in column_names[1:]:
@@ -227,8 +226,6 @@ class Statistics:
         interval_stats = self.stats_db.process_interval_statistics_query(
             "SELECT {} FROM %s ORDER BY starttimestamp ASC".format(result),
             table_name)
-
-        print(interval_stats)
 
         pretty_names = {'starttimestamp': "First packet timestamp(seconds)",
                         'lastpkttimestamp': "Last packet timestamp(seconds)",
@@ -245,13 +242,8 @@ class Statistics:
                 name = pretty_names[name]
             inverted_table[name] = []
             final_names.append(name)
-            print("loop : " + str(final_names))
-
-        print("finished:" + str(final_names))
 
         for row in interval_stats:
-            print(row)
-            print(final_names)
             for column, name in zip(row, final_names):
                 if type(column) == str:
                     try:
