@@ -54,7 +54,7 @@ else
     echo "Error: The 'build' directory was not found."
     exit
 fi
-
+ 
 which ninja &>/dev/null
 if [ $? != 0 ]; then
     cmake ..

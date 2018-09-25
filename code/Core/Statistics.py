@@ -231,14 +231,19 @@ class Statistics:
         inverted_table = {}
         inverted_table["Interval count: "] = 0
 
+        #maybe enumerate is the problem
         for i, name in enumerate(column_names):
             if name in pretty_names.keys():
                 name = pretty_names[name]
             inverted_table[name] = []
             final_names.append(name)
+            print("loop " + str(i) + ": " + final_names)
+
+        print("finished:" + final_names)
 
         for row in interval_stats:
             print(row)
+            print(final_names)
             for column, name in zip(row, final_names):
                 if type(column) == str:
                     try:
