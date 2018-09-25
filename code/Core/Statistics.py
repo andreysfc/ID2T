@@ -222,6 +222,7 @@ class Statistics:
         print(interval_stats)
 
         column_names = self.stats_db.get_field_types(table_name)
+        #column_names = column_names.keys().sort()
         print(str(column_names))
         pretty_names = {'starttimestamp': "First packet timestamp(seconds)",
                         'lastpkttimestamp': "Last packet timestamp(seconds)",
@@ -238,7 +239,7 @@ class Statistics:
                 name = pretty_names[name]
             inverted_table[name] = []
             final_names.append(name)
-            print("loop " + str(i) + ": " + str(final_names))
+            print("loop : " + str(final_names))
 
         print("finished:" + str(final_names))
 
