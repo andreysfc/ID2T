@@ -262,7 +262,7 @@ class Statistics:
 
         inverted_table["Interval count: "] = len(inverted_table[final_names[0]])
 
-        return inverted_table.items()
+        return sorted(inverted_table.items())
 
     @staticmethod
     def write_list(desc_val_unit_list, func, line_ending="\n"):
