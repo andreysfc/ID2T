@@ -216,7 +216,8 @@ class Statistics:
         :param table_name: the name of the interval statistics table
         :return: a list of tuples, each consisting of (description, values, unit).
         """
-        interval_stats = self.stats_db.process_interval_statistics_query("SELECT * from %s", table_name)
+        interval_stats = self.stats_db.process_interval_statistics_query("SELECT * FROM %s ORDER BY starttimestamp ASC",
+                                                                         table_name)
 
         print(interval_stats)
 
