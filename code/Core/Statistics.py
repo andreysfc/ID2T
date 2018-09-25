@@ -216,14 +216,20 @@ class Statistics:
         :param table_name: the name of the interval statistics table
         :return: a list of tuples, each consisting of (description, values, unit).
         """
-        interval_stats = self.stats_db.process_interval_statistics_query("SELECT * FROM %s ORDER BY starttimestamp ASC",
-                                                                         table_name)
+        column_names = self.stats_db.get_field_types(table_name)
+        column_names = sorted(column_names)
+        print(str(column_names))
+
+        result = column_names[0]
+        for name in column_names[1:]:
+            result += ", " + name
+
+        interval_stats = self.stats_db.process_interval_statistics_query(
+            "SELECT {} FROM %s ORDER BY starttimestamp ASC".format(result),
+            table_name)
 
         print(interval_stats)
 
-        column_names = self.stats_db.get_field_types(table_name)
-        #column_names = column_names.keys().sort()
-        print(str(column_names))
         pretty_names = {'starttimestamp': "First packet timestamp(seconds)",
                         'lastpkttimestamp': "Last packet timestamp(seconds)",
                         'pktrate': "packets count(packets)",
