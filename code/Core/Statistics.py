@@ -233,8 +233,7 @@ class Statistics:
         inverted_table = {}
         inverted_table["Interval count: "] = 0
 
-        #maybe enumerate is the problem
-        for i, name in enumerate(column_names):
+        for name in column_names:
             if name in pretty_names.keys():
                 name = pretty_names[name]
             inverted_table[name] = []
