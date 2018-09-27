@@ -168,11 +168,9 @@ class CLI(object):
                                 self.args.debug)
 
         # Load PCAP statistics
-        if self.args.extraTests:
-            self.args.recalculate_delete = True
         recalculate_intervals = None
         if self.args.recalculate_delete:
-            self.args.recalculate = True
+            recalculate_intervals = True
         elif self.args.recalculate_yes:
             recalculate_intervals = True
             self.args.recalculate = True
