@@ -9,7 +9,7 @@ int main(){
     std::string pcap_path = "pcap/2min.dump";
     std::string extra_tests = "True";
     std::string resource_path = "/home/pepper-jk/code/ID2T-toolkit/code/ID2TLib/../../resources/";
-    std::string db_path = "/home/pepper-jk/.cache/id2t/db/73/45/dbdec9ab5040.sqlite3";
+    std::string db_path = "/home/pepper-jk/.cache/id2t/db/107/244/0dcfada57fb7.sqlite3";
 
     std::cout << "start" << std::endl;
 
