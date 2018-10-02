@@ -108,6 +108,7 @@ class Statistics:
             # Get interval statistics tables which already exist
             previous_intervals = self.list_previous_interval_statistic_tables()
 
+            print(self.pcap_filepath + ", " + str(self.do_extra_tests) + ", " + Util.RESOURCE_DIR + ", " + self.path_db)
             self.pcap_proc = pr.pcap_processor(self.pcap_filepath, str(self.do_extra_tests), Util.RESOURCE_DIR,
                                                self.path_db)
 
@@ -138,7 +139,9 @@ class Statistics:
                 print("User specified intervals will be used to calculate interval statistics: " +
                       str(current_intervals)[1:-1])
 
+            print(str(intervals))
             self.pcap_proc.collect_statistics(intervals)
+            print(self.path_db + "," + str(intervals) + "," + str(delete))
             self.pcap_proc.write_to_database(self.path_db, intervals, delete)
             outstring_datasource = "by PCAP file processor."
 
@@ -146,6 +149,7 @@ class Statistics:
             if not flag_print_statistics and not flag_non_verbose:
                 self.stats_summary_new_db()
         elif intervals is not None and intervals != []:
+            print(self.pcap_filepath + ", " + str(self.do_extra_tests) + ", " + Util.RESOURCE_DIR + ", " + self.path_db)
             self.pcap_proc = pr.pcap_processor(self.pcap_filepath, str(self.do_extra_tests), Util.RESOURCE_DIR,
                                                self.path_db)
 
@@ -156,7 +160,9 @@ class Statistics:
                 if interval in previous_intervals:
                     intervals.remove(interval)
 
+            print(str(intervals))
             self.pcap_proc.collect_statistics(intervals)
+            print(self.path_db + "," + str(intervals))
             self.pcap_proc.write_new_interval_statistics(self.path_db, intervals)
 
         self.stats_db.set_current_interval_statistics_tables(current_intervals)
