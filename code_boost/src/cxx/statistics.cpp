@@ -172,7 +172,7 @@ void statistics::calculateIPIntervalPacketRate(std::chrono::duration<int, std::m
  * @param an old map containing the values with counts (from last iteration)
  * @return a vector containing the calculated entropies: entropy of all updated values, entropy of all novel values
  */
-std::vector<double> statistics::calculateEntropies(std::unordered_map<int, int> map, std::unordered_map<int, int> old) {
+std::vector<double> statistics::calculateEntropies(std::unordered_map<int, int> &map, std::unordered_map<int, int> &old) {
     std::vector<double> counts;
     int count_total = 0;
     double entropy = 0.0;

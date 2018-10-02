@@ -558,7 +558,7 @@ public:
 
     std::vector<float> calculateLastIntervalIPsEntropy(std::chrono::microseconds intervalStartTimestamp);
 
-    std::vector<double> calculateEntropies(std::unordered_map<int, int> map, std::unordered_map<int, int> old);
+    std::vector<double> calculateEntropies(std::unordered_map<int, int> &map, std::unordered_map<int, int> &old);
 
     void addIntervalStat(std::chrono::duration<int, std::micro> interval, std::chrono::microseconds intervalStartTimestamp, std::chrono::microseconds lastPktTimestamp);
 
