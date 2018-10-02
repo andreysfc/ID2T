@@ -15,18 +15,19 @@ int main(){
     std::cout << "pp" << std::endl;
 
     // [10.0]
-    py::list* intervals = new py::list();
+    py::list intervals;
     std::cout << "py::list" << std::endl;
-    intervals->append(10.0);
+    py::float_ elem = 10.0;
+    intervals.append(elem);
     std::cout << "py::list" << std::endl;
 
-    pp->collect_statistics(*intervals);
+    pp->collect_statistics(intervals);
     std::cout << "collect_statistics" << std::endl;
 
     // /home/pepper-jk/.cache/id2t/db/73/45/dbdec9ab5040.sqlite3, [10.0], True
     bool del = true;
 
-    pp->write_to_database(db_path, *intervals, del);
+    pp->write_to_database(db_path, intervals, del);
     std::cout << "write_to_database" << std::endl;
 
     return 0;
