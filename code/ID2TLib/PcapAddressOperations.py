@@ -127,7 +127,9 @@ class PcapAddressOperations():
             # choose the uncertain IPs to return
             total_uncertain = min(count_uncertain, len(uncertain_local_ips))
             for _ in range(0, total_uncertain):
-                random_local_ip = choice(sorted(uncertain_local_ips))
+                random_local_ip = IPAddress.parse("1.1.1.1")
+                while not random_local_ip.is_private():
+                    random_local_ip = choice(sorted(uncertain_local_ips))
                 retr_local_ips.append(str(random_local_ip))
                 uncertain_local_ips.remove(random_local_ip)
             
